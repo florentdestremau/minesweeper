@@ -1,6 +1,7 @@
 import express from 'express';
 import Database from 'better-sqlite3';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, statSync } from 'fs';
+import { join } from 'path';
 
 const PORT = 80;
 const DB_PATH = process.env.DB_PATH || '/storage/minesweeper.db';
@@ -29,7 +30,29 @@ const getScores = db.prepare(
 
 const app = express();
 app.use(express.json());
-app.use(express.static('public'));
+
+// Long cache for versioned assets, no-cache for html
+app.use(express.static('public', {
+  index: false,
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.set('Cache-Control', 'no-cache');
+    } else {
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+  },
+}));
+
+const PUBLIC = new URL('public', import.meta.url).pathname;
+
+app.get('/', (_req, res) => {
+  const v = (file) => statSync(join(PUBLIC, file)).mtimeMs.toString(36);
+  let html = readFileSync(join(PUBLIC, 'index.html'), 'utf8');
+  html = html
+    .replace(/(href="style\.css)(")/,  `$1?v=${v('style.css')}$2`)
+    .replace(/(src="game\.js)(")/,     `$1?v=${v('game.js')}$2`);
+  res.set('Cache-Control', 'no-cache').type('html').send(html);
+});
 
 app.get('/up', (_req, res) => res.send('OK'));
 
