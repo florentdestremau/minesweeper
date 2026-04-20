@@ -258,7 +258,7 @@ function renderBoard() {
 }
 
 function handleClick(e) {
-  if (state.gameOver) return;
+  if (state.gameOver || state._longPressBlocked) return;
   const cell = e.target.closest('.cell');
   if (!cell) return;
   const r = +cell.dataset.r;
@@ -290,9 +290,11 @@ function handleClick(e) {
 
 function handleRightClick(e) {
   e.preventDefault();
-  if (state.gameOver) return;
-  const cell = e.target.closest('.cell');
-  if (!cell) return;
+  cycleFlag(e.target.closest('.cell'));
+}
+
+function cycleFlag(cell) {
+  if (!cell || state.gameOver) return;
   const r = +cell.dataset.r;
   const c = +cell.dataset.c;
   if (state.revealed[r][c]) return;
@@ -309,6 +311,30 @@ function handleRightClick(e) {
   updateMineCount();
   renderBoard();
 }
+
+// Long press for touch devices
+let _longPressTimer = null;
+
+$('board').addEventListener('touchstart', e => {
+  state._longPressBlocked = false;
+  const cell = e.target.closest('.cell');
+  if (!cell) return;
+  _longPressTimer = setTimeout(() => {
+    state._longPressBlocked = true;
+    cycleFlag(cell);
+    navigator.vibrate?.(40);
+  }, 450);
+}, { passive: true });
+
+$('board').addEventListener('touchmove', () => {
+  clearTimeout(_longPressTimer);
+  _longPressTimer = null;
+}, { passive: true });
+
+$('board').addEventListener('touchend', () => {
+  clearTimeout(_longPressTimer);
+  _longPressTimer = null;
+}, { passive: true });
 
 function reset() {
   initBoard();
