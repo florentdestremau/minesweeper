@@ -290,6 +290,7 @@ function handleClick(e) {
 
 function handleRightClick(e) {
   e.preventDefault();
+  if (state._longPressBlocked) return;
   cycleFlag(e.target.closest('.cell'));
 }
 
