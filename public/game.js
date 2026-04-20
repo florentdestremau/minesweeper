@@ -312,6 +312,19 @@ function cycleFlag(cell) {
   renderBoard();
 }
 
+function placeFlag(cell) {
+  if (!cell || state.gameOver) return;
+  const r = +cell.dataset.r;
+  const c = +cell.dataset.c;
+  if (state.revealed[r][c]) return;
+
+  state.question[r][c] = false;
+  state.flagged[r][c] = !state.flagged[r][c];
+
+  updateMineCount();
+  renderBoard();
+}
+
 // Long press for touch devices
 let _longPressTimer = null;
 
@@ -321,7 +334,7 @@ $('board').addEventListener('touchstart', e => {
   if (!cell) return;
   _longPressTimer = setTimeout(() => {
     state._longPressBlocked = true;
-    cycleFlag(cell);
+    placeFlag(cell);
     navigator.vibrate?.(40);
   }, 450);
 }, { passive: true });
