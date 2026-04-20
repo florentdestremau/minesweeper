@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minesweeper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>💣 Minesweeper</h1>
+      <div id="controls">
+        <div id="stats">
+          <span id="mine-count">💣 <span id="mines-left">0</span></span>
+          <button id="reset-btn">🙂</button>
+          <span id="timer-display">⏱ <span id="timer">000</span></span>
+        </div>
+        <div id="difficulty">
+          <button class="diff-btn active" data-diff="beginner">Débutant</button>
+          <button class="diff-btn" data-diff="intermediate">Intermédiaire</button>
+          <button class="diff-btn" data-diff="expert">Expert</button>
+          <button id="lb-btn">🏆</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div id="board"></div>
+    </main>
+    <div id="overlay" class="hidden">
+      <div id="overlay-content">
+        <div id="overlay-emoji"></div>
+        <div id="overlay-message"></div>
+        <form id="score-form" class="hidden">
+          <p id="score-time-label"></p>
+          <input id="score-name" type="text" maxlength="20" placeholder="Votre pseudo" autocomplete="off">
+          <button type="submit">Enregistrer 🏆</button>
+        </form>
+        <button id="overlay-btn">Rejouer</button>
+      </div>
+    </div>
+
+    <div id="lb-modal" class="hidden">
+      <div id="lb-content">
+        <button id="lb-close">✕</button>
+        <h2>🏆 Meilleurs scores</h2>
+        <div id="lb-tabs">
+          <button class="lb-tab active" data-diff="beginner">Débutant</button>
+          <button class="lb-tab" data-diff="intermediate">Intermédiaire</button>
+          <button class="lb-tab" data-diff="expert">Expert</button>
+        </div>
+        <div id="lb-table-wrap">
+          <table id="lb-table">
+            <thead><tr><th>#</th><th>Joueur</th><th>Temps</th></tr></thead>
+            <tbody id="lb-body"></tbody>
+          </table>
+          <p id="lb-empty" class="hidden">Aucun score pour ce niveau.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

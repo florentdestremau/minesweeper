@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
       - name: Validate HTML
         run: |
-          grep -q '<!DOCTYPE html>' index.html
-          grep -q 'style.css' index.html
-          grep -q 'game.js' index.html
+          grep -q '<!DOCTYPE html>' public/index.html
+          grep -q 'style.css' public/index.html
+          grep -q 'game.js' public/index.html
       - name: Check JS syntax
-        run: node --check game.js
+        run: node --check public/game.js && node --check server.js
 
   docker:
     needs: test
