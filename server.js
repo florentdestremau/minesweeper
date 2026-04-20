@@ -38,6 +38,7 @@ app.get('/api/scores/:difficulty', (req, res) => {
   if (!['beginner', 'intermediate', 'expert'].includes(difficulty)) {
     return res.status(400).json({ error: 'Invalid difficulty' });
   }
+  res.set('Cache-Control', 'no-store');
   res.json(getScores.all(difficulty));
 });
 
