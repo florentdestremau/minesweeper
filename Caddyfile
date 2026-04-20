@@ -1,0 +1,8 @@
+:80 {
+    root * /srv
+    file_server
+
+    handle /up {
+        respond "OK" 200
+    }
+}
